@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import './signup.dart';
 import './home.dart';
 
+// Add you database conectivity here for login
 class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -92,6 +93,7 @@ class Login extends StatelessWidget {
                       text: "Forgot Password ?",
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
+                          // Pass your forgot password code here
                           print("Forgot Password Pressed");
                         },
                       style: TextStyle(fontSize: 15),

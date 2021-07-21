@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './login.dart';
 
+// Add you database conectivity here for signup
 class Signup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

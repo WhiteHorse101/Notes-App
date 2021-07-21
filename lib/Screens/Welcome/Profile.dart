@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// This is still incomplete
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -15,10 +16,12 @@ class Profile extends StatelessWidget {
             child: Stack(
               children: <Widget>[
                 Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/profileback.png"),
-                      fit: BoxFit.cover,
+                  width: (MediaQuery.of(context).size.width),
+                  height: 300,
+                  child: Card(
+                    color: Color(0xff262A34),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
                     ),
                   ),
                 )
