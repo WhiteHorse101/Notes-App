@@ -1,17 +1,38 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import './signup.dart';
 import './home.dart';
 
+class LoginScreen extends StatefulWidget {
+  @override
+  Login createState() => Login();
+}
+
 // Add you database conectivity here for login
-class Login extends StatelessWidget {
+class Login extends State<LoginScreen> {
+  late String _email, _pass;
+  final auth = FirebaseAuth.instance;
+  bool _isObscure = true;
+  final _formKey = GlobalKey<FormState>();
+
+  void validate() {
+    final isValid = _formKey.currentState!.validate();
+    if (isValid) {
+      print('Everything looks good!');
+      print(_email);
+      print(_pass);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(
         children: <Widget>[
-          Container(
+          Form(
+            key: _formKey,
             child: Stack(
               children: <Widget>[
                 Container(
@@ -29,9 +50,10 @@ class Login extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: 255.0, left: 20.0, right: 20.0),
+                  padding: EdgeInsets.only(top: 245.0, left: 20.0, right: 20.0),
                   child: Column(children: <Widget>[
-                    TextField(
+                    TextFormField(
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         suffixIcon: new Icon(Icons.email_rounded),
                         border: OutlineInputBorder(
@@ -39,33 +61,76 @@ class Login extends StatelessWidget {
                             const Radius.circular(15.0),
                           ),
                         ),
-                        hintText: "Name",
+                        hintText: "Email",
                       ),
+                      validator: (input) {
+                        if (input == null || input.isEmpty) {
+                          return 'Enter Email';
+                        }
+                        if (!RegExp(r'\S+@\S+\.\S+').hasMatch(input)) {
+                          return 'Please enter a valid email address';
+                        }
+                        // Return null if the entered email is valid
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          _email = value.trim();
+                        });
+                      },
                     )
                   ]),
                 ),
                 Container(
                   padding: EdgeInsets.only(top: 335.0, left: 20.0, right: 20.0),
                   child: Column(children: <Widget>[
-                    TextField(
+                    TextFormField(
+                      obscureText: true,
                       decoration: InputDecoration(
-                          suffixIcon: new Icon(Icons.remove_red_eye_outlined),
+                          suffixIcon: IconButton(
+                            icon: Icon(_isObscure
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                            onPressed: () {
+                              setState(() {
+                                _isObscure = !_isObscure;
+                              });
+                            },
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: const BorderRadius.all(
                               const Radius.circular(15.0),
                             ),
                           ),
                           hintText: "Password"),
+                      validator: (input) {
+                        if (input == null || input.isEmpty) {
+                          return 'Password is required';
+                        }
+                        if (input.length < 6) {
+                          return 'Password lenght must be greater then 6';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          _pass = value.trim();
+                        });
+                      },
                     )
                   ]),
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: 455.0, left: 50.0, right: 50.0),
+                  padding: EdgeInsets.only(top: 465.0, left: 50.0, right: 50.0),
                   child: ButtonTheme(
                     minWidth: 300,
                     height: 45,
                     child: RaisedButton(
                         onPressed: () {
+                          validate();
+                          auth.signInWithEmailAndPassword(
+                              email: _email, password: _pass);
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -87,7 +152,7 @@ class Login extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: 405.0, left: 30.0, right: 20.0),
+                  padding: EdgeInsets.only(top: 425.0, left: 30.0, right: 20.0),
                   child: RichText(
                     text: TextSpan(
                       text: "Forgot Password ?",
